@@ -17,9 +17,10 @@ for df, i in range(5) :
                      parse_dates=True,
                      encoding='utf-8',
                      low_memory=False)
+    
     ##print(f"File {i + aqi_files_start_year} loaded successfully.")
 
-
+print(aqi_df)
 
 ## https://chatgpt.com/c/685087ee-c978-8011-ae04-43bcdfc3dbc9
 
