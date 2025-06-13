@@ -43,8 +43,10 @@ for i in range(5) :
 
     # clean up the dataframe
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-    df = df.drop(columns=['lower_95%_limit', 'upper_95%_limit'])  # optional, but cleaner
     df.rename(columns={'counties': 'county'}, inplace=True)
+    df = df[df['county'] != 'California'] # remove rows with 'California' in county name
+    df = df.drop(columns=['lower_95%_limit', 'upper_95%_limit'])  # optional, but cleaner
+
  
     # add year column and reorder columns to have year after county (like in aqi_df)
     df['year'] = i + asthma_files_start_year

@@ -30,7 +30,7 @@ for i in range(5) :
 
     aqi_df.append(df)
 
-# combine all aqi years dataframes into one
+# combine
 combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
 combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
 #print(combined_aqi_df)
@@ -65,9 +65,10 @@ for i in range(5) :
     df = pd.read_excel('raw_data/Asthma_Emergency_' + str(i + asthma_files_start_year) + '.xlsx')
     #print(df.info())
 
-    # clean up the dataframe
+    # clean
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     df = df.drop(columns=['lower_95%_limit', 'upper_95%_limit'])  # optional, but cleaner
+    df = df[df['county'] != 'California'] # remove rows with 'California' in county name
     df.rename(columns={'counties': 'county'}, inplace=True)
  
     # add year column and reorder columns to have year after county (like in aqi_df)
@@ -77,7 +78,7 @@ for i in range(5) :
 
     asthma_df.append(df)
 
-# combine all asthma years dataframes into one
+# combine
 combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
 print(combined_asthma_df)
 combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
