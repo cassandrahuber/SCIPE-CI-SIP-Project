@@ -22,13 +22,10 @@ for i in range(5) :
     # load the data into a DataFrame
     df = pd.read_csv('raw_data/annual_aqi_by_county_' + str(i + aqi_files_start_year) + '.csv')
     
-    df = df[df['State'] == 'California'].drop(columns=['State'])
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+    df = df[df['state'] == 'California'].drop(columns=['state'])
     #df.set_index('County', inplace=True)
     #print(df.info())
-
-    ##add missing county check
-    ##figure out which counties missing?
 
     aqi_df.append(df)
 
@@ -41,20 +38,31 @@ combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
 year_counts = combined_aqi_df.groupby('county')['year'].nunique()
 print(year_counts.sort_values())
 
+    ##figure out which counties missing?
+
 
 
 
 # clean asthma emergency department visits data
 
 asthma_df = []
-df = pd.read_excel('raw_data/Asthma_Emergency_2017.xlsx')
-print(df.info())
 
-##figure out what do to abt 'NA' in sheet
+df = pd.read_excel('raw_data/Asthma_Emergency_2017.xlsx')
+df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+df = df.drop(columns=['lower_95%_limit', 'upper_95%_limit'])    # optional, but cleaner
+df.rename(columns={'counties': 'county'}, inplace=True)
+df['year'] = 2017
+print(df.info())
+asthma_df.append(df)
+
+print(asthma_df[0])
+
+
 ##remove lower and upper limit collumns
 ##change "Counties" column to "County"
 ##add years column + year data
 ##remove california row, add to list for extra data?
 ##combine together all excel sheets to one
+##figure out what do to abt 'NA' in sheet
 
 ##may have to handle about table
