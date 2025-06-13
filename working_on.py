@@ -49,3 +49,5 @@ print(df.info())
 ##add years column + year data
 ##remove california row, add to list for extra data?
 ##combine together all excel sheets to one
+
+##may have to handle about table
