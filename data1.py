@@ -24,7 +24,7 @@ for i in range(5) :
     aqi_df.append(df)
 
 # combine all aqi years dataframes into one
-combined_aqi_df = pd.concat(aqi_df, ignore_index=False)
+combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
 
 #, axis=1
 
