@@ -31,3 +31,5 @@ for i in range(5) :
 aqi_df = pd.concat(aqi_df)
 
 #, axis=1
+
+aqi_df.to_csv('processed_data/combined_aqi_data.csv')
