@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 # clean air quality data:
 
 aqi_df = []
@@ -17,9 +18,9 @@ for i in range(5) :
     aqi_df.append(df)
 
 # combine all aqi years dataframes into one
-combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
-#print(combined_aqi_df)
-combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
+cleaned_aqi_df = pd.concat(aqi_df, ignore_index=True)
+#print(cleaned_aqi_df)
+cleaned_aqi_df.to_csv('processed_data/cleaned_aqi.csv')
 
 
 
@@ -52,9 +53,10 @@ for i in range(5) :
     asthma_df.append(df)
 
 # combine all asthma years dataframes into one
-combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
-#print(combined_asthma_df)
-combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
+cleaned_asthma_df = pd.concat(asthma_df, ignore_index=True)
+#print(cleaned_asthma_df)
+cleaned_asthma_df.to_csv('processed_data/cleaned_asthma.csv')
+#cleaned_asthma_df.to_csv('processed_data/cleaned_asthma_' + str(asthma_files_start_year) + '-' + str(i + asthma_files_start_year) + '.csv')
 
 
 
@@ -73,16 +75,16 @@ all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', '
                 'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
 
 # check aqi data counties appear consistently (all numbers should be equal)
-year_counts = combined_aqi_df.groupby('county')['year'].nunique()
+year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
 #print(year_counts.sort_values())
 
 # figure out which counties missing in aqi data
-aqi_counties = combined_aqi_df['county'].unique()
+aqi_counties = cleaned_aqi_df['county'].unique()
 missing_counties_aqi = set(all_counties) - set(aqi_counties)
 #print(missing_counties_aqi)
 
 # find rows with null values in ashtma data
-missing_counties_asthma = combined_asthma_df[combined_asthma_df.isnull().any(axis=1)]
+missing_counties_asthma = cleaned_asthma_df[cleaned_asthma_df.isnull().any(axis=1)]
 
 # print counties with null values
 print(missing_counties_asthma['county'].unique())
@@ -95,4 +97,7 @@ print(missing_counties_asthma)
 
 
 
-# combine asthma and aqi cleaned data
+# merge cleaned data sets
+merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, 
+                      on=['county', 'year'], 
+                      how='inner')
