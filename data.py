@@ -19,7 +19,7 @@ for i in range(5) :
 # combine all aqi years dataframes into one
 combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
 #print(combined_aqi_df)
-#combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
+combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
 
 
 
@@ -54,26 +54,32 @@ for i in range(5) :
 # combine all asthma years dataframes into one
 combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
 #print(combined_asthma_df)
-
-#combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
+combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
 
 
 
 
 # check if all counties data for all years
 
-# how many distinct years each county appears in aqi (check if all listed counties have data for all years)
+# list of all county names in california
+all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
+                'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
+                'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
+                'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
+                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',
+                'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
+                'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
+                'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
+                'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
+
+# check aqi data counties appear consistently (all numbers should be equal)
 year_counts = combined_aqi_df.groupby('county')['year'].nunique()
-print(year_counts.sort_values())
+#print(year_counts.sort_values())
 
 # figure out which counties missing in aqi data
-all_counties = combined_asthma_df['county'].unique()
 aqi_counties = combined_aqi_df['county'].unique()
-#print(len(all_counties), len(aqi_counties))
-
-missing_counties = set(all_counties) - set(aqi_counties)
-#print("Counties missing in AQI data:", missing_counties)
-
+missing_counties_aqi = set(all_counties) - set(aqi_counties)
+#print(missing_counties_aqi)
 
 # find rows with null values in ashtma data
 missing_counties_asthma = combined_asthma_df[combined_asthma_df.isnull().any(axis=1)]
@@ -87,3 +93,6 @@ print(missing_counties_asthma)
 
 ####deal with null data
 
+
+
+# combine asthma and aqi cleaned data

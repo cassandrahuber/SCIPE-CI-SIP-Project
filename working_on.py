@@ -193,7 +193,7 @@ all_counties = combined_asthma_df['county'].unique()
 aqi_counties = combined_aqi_df['county'].unique()
 #print(len(all_counties), len(aqi_counties))
 
-missing_counties = set(all_counties) - set(aqi_counties)
+missing_counties_aqi = set(all_counties) - set(aqi_counties)
 #print("Counties missing in AQI data:", missing_counties)
 
 
@@ -209,5 +209,32 @@ print(missing_counties_asthma)
 
 ####deal with null data
 
+###add counties with null data to aqi data
 
 
+all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
+                'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
+                'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
+                'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
+                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',
+                'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
+                'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
+                'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
+                'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
+
+
+
+#import itertools
+
+#years = sorted(combined_aqi_df['year'].unique())
+#skeleton = pd.DataFrame(itertools.product(all_counties, years),
+#                        columns=['county','year'])
+
+#merged = skeleton.merge(combined_aqi_df, on=['county','year'], how='left')
+
+# rows where median_aqi is missing:
+#gaps = merged[merged['median_aqi'].isna()]
+
+# count gaps per county
+#gap_counts = gaps.groupby('county').size().sort_values(ascending=False)
+#print(gap_counts)
