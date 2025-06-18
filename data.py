@@ -19,7 +19,7 @@ for i in range(5) :
 # combine all aqi years dataframes into one
 combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
 #print(combined_aqi_df)
-combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
+#combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
 
 
 
@@ -54,7 +54,8 @@ for i in range(5) :
 # combine all asthma years dataframes into one
 combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
 #print(combined_asthma_df)
-combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
+
+#combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
 
 
 
@@ -74,4 +75,15 @@ missing_counties = set(all_counties) - set(aqi_counties)
 #print("Counties missing in AQI data:", missing_counties)
 
 
-# check if all counties data for all years in asthma data
+# find rows with null values in ashtma data
+missing_counties_asthma = combined_asthma_df[combined_asthma_df.isnull().any(axis=1)]
+
+# print counties with null values
+print(missing_counties_asthma['county'].unique())
+
+# print the entire rows with null values
+print(missing_counties_asthma)
+
+
+####deal with null data
+
