@@ -22,11 +22,7 @@ combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
 combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
 
 
-# how many distinct years each county appears  (check if all listed counties have data for all years)
-year_counts = combined_aqi_df.groupby('county')['year'].nunique()
-print(year_counts.sort_values())
 
-    ##figure out which counties missing?
 
 
 
@@ -59,3 +55,23 @@ for i in range(5) :
 combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
 #print(combined_asthma_df)
 combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
+
+
+
+
+# check if all counties data for all years
+
+# how many distinct years each county appears in aqi (check if all listed counties have data for all years)
+year_counts = combined_aqi_df.groupby('county')['year'].nunique()
+print(year_counts.sort_values())
+
+# figure out which counties missing in aqi data
+all_counties = combined_asthma_df['county'].unique()
+aqi_counties = combined_aqi_df['county'].unique()
+#print(len(all_counties), len(aqi_counties))
+
+missing_counties = set(all_counties) - set(aqi_counties)
+#print("Counties missing in AQI data:", missing_counties)
+
+
+# check if all counties data for all years in asthma data
