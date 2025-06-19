@@ -35,11 +35,6 @@ combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
 combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
 #print(combined_aqi_df)
 
-# how many distinct years each county appears  (check if all listed counties have data for all years):
-year_counts = combined_aqi_df.groupby('county')['year'].nunique()
-print(year_counts.sort_values())
-
-    ##figure out which counties missing?
 
 
 
@@ -69,6 +64,7 @@ for i in range(5) :
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     df = df.drop(columns=['lower_95%_limit', 'upper_95%_limit'])  # optional, but cleaner
     df = df[df['county'] != 'California'] # remove rows with 'California' in county name
+        ##possibly make a list of these rows for extra data?
     df.rename(columns={'counties': 'county'}, inplace=True)
  
     # add year column and reorder columns to have year after county (like in aqi_df)
@@ -83,13 +79,18 @@ combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
 print(combined_asthma_df)
 combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
 
-
-
-
-
-##remove lower and upper limit collumns
-##remove california row, add to list for extra data?
-##combine together all excel sheets to one
 ##figure out what do to abt 'NA' in sheet
 
-##may have to handle about table
+
+
+
+
+
+# find counties missing
+
+# count number of years county appears in aqi data
+year_counts = combined_aqi_df.groupby('county')['year'].nunique()
+print(year_counts.sort_values())
+
+#figure out which counties missing in aqi data
+all_counties = combined_asthma_df['county'].unique()
