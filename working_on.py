@@ -90,7 +90,11 @@ combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
 
 # count number of years county appears in aqi data
 year_counts = combined_aqi_df.groupby('county')['year'].nunique()
-print(year_counts.sort_values())
+#print(year_counts.sort_values())
 
-#figure out which counties missing in aqi data
+# figure out which counties missing in aqi data
 all_counties = combined_asthma_df['county'].unique()
+aqi_counties = combined_aqi_df['county'].unique()
+#print(len(all_counties), len(aqi_counties))
+missing_counties = set(all_counties) - set(aqi_counties)
+#print("Counties missing in AQI data:", missing_counties)
