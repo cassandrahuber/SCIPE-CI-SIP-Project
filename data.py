@@ -54,30 +54,33 @@ def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
 
 
 
+
+
 # check if all counties data for all years
+def find_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
+    
+    # find counties missing in aqi data
+    aqi_counties = cleaned_aqi_df['county'].unique()
+    missing_counties_aqi = set(all_counties) - set(aqi_counties)
+
+    # find rows with null values in ashtma data
+    missing_counties_asthma = cleaned_asthma_df[cleaned_asthma_df.isnull().any(axis=1)]
+
+    return missing_counties_aqi, missing_counties_asthma
+
+# check aqi data counties appear consistently (all numbers should be equal)
+year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
+#print(year_counts.sort_values())
 
 # list of all county names in california
 all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
                 'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
                 'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
                 'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
-                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',
-                'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
+                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',                    'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
                 'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
                 'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
                 'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
-
-# check aqi data counties appear consistently (all numbers should be equal)
-year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
-#print(year_counts.sort_values())
-
-# figure out which counties missing in aqi data
-aqi_counties = cleaned_aqi_df['county'].unique()
-missing_counties_aqi = set(all_counties) - set(aqi_counties)
-#print(missing_counties_aqi)
-
-# find rows with null values in ashtma data
-missing_counties_asthma = cleaned_asthma_df[cleaned_asthma_df.isnull().any(axis=1)]
 
 # print counties with null values
 print(missing_counties_asthma['county'].unique())
@@ -97,3 +100,5 @@ merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'],
 #print(f"Years covered: {merged_data['year'].min()}-{merged_data['year'].max()}")
 
 merged_data.to_csv('processed_data/merged_data.csv')
+
+
