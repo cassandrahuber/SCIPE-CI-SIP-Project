@@ -98,6 +98,9 @@ print(missing_counties_asthma)
 
 
 # merge cleaned data sets
-merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, 
-                      on=['county', 'year'], 
-                      how='inner')
+merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
+#print(f"Final dataset: {len(merged_data)} rows, {len(merged_data.columns)} columns")
+#print(f"Counties covered: {merged_data['county'].nunique()}")
+#print(f"Years covered: {merged_data['year'].min()}-{merged_data['year'].max()}")
+
+merged_data.to_csv('processed_data/merged_data.csv')
