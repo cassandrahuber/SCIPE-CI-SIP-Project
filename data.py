@@ -95,18 +95,21 @@ all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', '
 
 
 
+def merge_cleaned_data()
+
+# merge cleaned data sets
+merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
+merged_data_timeframe = str(merged_data['year'].min()) + "-" + str(merged_data['year'].max())
+
+#print(f"Final dataset: {len(merged_data)} rows, {len(merged_data.columns)} columns")
+#print(f"Counties covered: {merged_data['county'].nunique()}")
+#print(f"Years covered: ", merged_data_timeframe)
+
+merged_data.to_csv('processed_data/merged_data_' + merged_data_timeframe + '.csv')
+
+
+
 clean_aqi = clean_aqi_quality_data(2017, 5, 'raw_data')
 clean_asthma = clean_asthma_ed_visits_data(2017, 5, 'raw_data')
 
 #find_missing_data(clean_aqi, clean_asthma, all_counties)
-
-
-# merge cleaned data sets
-merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
-#print(f"Final dataset: {len(merged_data)} rows, {len(merged_data.columns)} columns")
-#print(f"Counties covered: {merged_data['county'].nunique()}")
-#print(f"Years covered: {merged_data['year'].min()}-{merged_data['year'].max()}")
-
-merged_data.to_csv('processed_data/merged_data.csv')
-
-
