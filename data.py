@@ -83,8 +83,6 @@ def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
 
 
 
-
-
 # merge cleaned data sets
 def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df) :
     # merge cleaned data sets
