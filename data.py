@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 # clean air quality data:
 
 aqi_df = []
@@ -17,9 +18,9 @@ for i in range(5) :
     aqi_df.append(df)
 
 # combine all aqi years dataframes into one
-combined_aqi_df = pd.concat(aqi_df, ignore_index=True)
-#print(combined_aqi_df)
-combined_aqi_df.to_csv('processed_data/combined_aqi_data.csv')
+cleaned_aqi_df = pd.concat(aqi_df, ignore_index=True)
+#print(cleaned_aqi_df)
+cleaned_aqi_df.to_csv('processed_data/cleaned_aqi.csv')
 
 
 
@@ -52,26 +53,54 @@ for i in range(5) :
     asthma_df.append(df)
 
 # combine all asthma years dataframes into one
-combined_asthma_df = pd.concat(asthma_df, ignore_index=True)
-#print(combined_asthma_df)
-combined_asthma_df.to_csv('processed_data/combined_asthma_data.csv')
+cleaned_asthma_df = pd.concat(asthma_df, ignore_index=True)
+#print(cleaned_asthma_df)
+cleaned_asthma_df.to_csv('processed_data/cleaned_asthma.csv')
+#cleaned_asthma_df.to_csv('processed_data/cleaned_asthma_' + str(asthma_files_start_year) + '-' + str(i + asthma_files_start_year) + '.csv')
 
 
 
 
 # check if all counties data for all years
 
-# how many distinct years each county appears in aqi (check if all listed counties have data for all years)
-year_counts = combined_aqi_df.groupby('county')['year'].nunique()
-print(year_counts.sort_values())
+# list of all county names in california
+all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
+                'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
+                'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
+                'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
+                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',
+                'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
+                'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
+                'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
+                'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
+
+# check aqi data counties appear consistently (all numbers should be equal)
+year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
+#print(year_counts.sort_values())
 
 # figure out which counties missing in aqi data
-all_counties = combined_asthma_df['county'].unique()
-aqi_counties = combined_aqi_df['county'].unique()
-#print(len(all_counties), len(aqi_counties))
+aqi_counties = cleaned_aqi_df['county'].unique()
+missing_counties_aqi = set(all_counties) - set(aqi_counties)
+#print(missing_counties_aqi)
 
-missing_counties = set(all_counties) - set(aqi_counties)
-#print("Counties missing in AQI data:", missing_counties)
+# find rows with null values in ashtma data
+missing_counties_asthma = cleaned_asthma_df[cleaned_asthma_df.isnull().any(axis=1)]
+
+# print counties with null values
+print(missing_counties_asthma['county'].unique())
+
+# print the entire rows with null values
+print(missing_counties_asthma)
 
 
-# check if all counties data for all years in asthma data
+####deal with null data
+
+
+
+# merge cleaned data sets
+merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
+#print(f"Final dataset: {len(merged_data)} rows, {len(merged_data.columns)} columns")
+#print(f"Counties covered: {merged_data['county'].nunique()}")
+#print(f"Years covered: {merged_data['year'].min()}-{merged_data['year'].max()}")
+
+merged_data.to_csv('processed_data/merged_data.csv')
