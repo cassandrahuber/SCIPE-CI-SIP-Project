@@ -16,7 +16,6 @@ def clean_aqi_quality_data(start_year, num_years, input_folder) :
     # combine all aqi years dataframes into one
     cleaned_aqi_df = pd.concat(aqi_df, ignore_index=True)
     #print(cleaned_aqi_df)
-    #cleaned_aqi_df.to_csv('processed_data/cleaned_aqi.csv')
 
     return cleaned_aqi_df
 
@@ -47,8 +46,6 @@ def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
     # combine all asthma years dataframes into one
     cleaned_asthma_df = pd.concat(asthma_df, ignore_index=True)
     #print(cleaned_asthma_df)
-    #cleaned_asthma_df.to_csv('processed_data/cleaned_asthma.csv')
-    #cleaned_asthma_df.to_csv('processed_data/cleaned_asthma_' + str(asthma_files_start_year) + '-' + str(i + asthma_files_start_year) + '.csv')
 
     return cleaned_asthma_df
 
@@ -95,21 +92,25 @@ all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', '
 
 
 
-def merge_cleaned_data()
+def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df) :
+    # merge cleaned data sets
+    merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
+    merged_data_timeframe = str(merged_data['year'].min()) + "-" + str(merged_data['year'].max())
 
-# merge cleaned data sets
-merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
-merged_data_timeframe = str(merged_data['year'].min()) + "-" + str(merged_data['year'].max())
+    #print(f"Final dataset: {len(merged_data)} rows, {len(merged_data.columns)} columns")
+    #print(f"Counties covered: {merged_data['county'].nunique()}")
+    #print(f"Years covered: ", merged_data_timeframe)
 
-#print(f"Final dataset: {len(merged_data)} rows, {len(merged_data.columns)} columns")
-#print(f"Counties covered: {merged_data['county'].nunique()}")
-#print(f"Years covered: ", merged_data_timeframe)
-
-merged_data.to_csv('processed_data/merged_data_' + merged_data_timeframe + '.csv')
-
+    return merged_data, merged_data_timeframe
 
 
-clean_aqi = clean_aqi_quality_data(2017, 5, 'raw_data')
-clean_asthma = clean_asthma_ed_visits_data(2017, 5, 'raw_data')
+if __name__ == "__main__":
+    clean_aqi = clean_aqi_quality_data(2017, 5, 'raw_data')
+    clean_asthma = clean_asthma_ed_visits_data(2017, 5, 'raw_data')
+    #clean_aqi.to_csv('processed_data/cleaned_aqi.csv')
+    #clean_asthma.to_csv('processed_data/cleaned_asthma.csv')
 
-#find_missing_data(clean_aqi, clean_asthma, all_counties)
+    #find_missing_data(clean_aqi, clean_asthma, all_counties)
+
+    merged_data, merged_data_timeframe = merge_cleaned_data(clean_aqi, clean_asthma)
+    merged_data.to_csv('processed_data/merged_data_' + merged_data_timeframe + '.csv')
