@@ -32,7 +32,7 @@ def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
 
         # clean up the dataframe
         df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-        df.rename(columns={'counties': 'county'}, inplace=True)
+        df.rename(columns={'counties': 'county', 'age-adjusted_rate_per_10,000': 'asthma_rate'}, inplace=True)
         df = df[df['county'] != 'California'] # remove rows with 'California' in county name
         df = df.drop(columns=['lower_95%_limit', 'upper_95%_limit'])  # optional, but cleaner
 
