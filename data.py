@@ -55,22 +55,33 @@ def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
 
 
 
-
+# note: not necessary to run this function, but useful for checking data (merging automatically ignores missing data pairs)
 # check if all counties data for all years
-def find_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
+def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
+    # check aqi data counties appear consistently (all numbers should be equal)
+    year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
+    if year_counts.nunique() == 1 :
+        print("All counties have aqi data for the same number of years.")
+    else :
+        print("Counties have inconsistent aqi data across years.")
+        print(year_counts.sort_values())
+        # optional, find the specific years
     
-    # find counties missing in aqi data
+    # find counties missing all years in aqi data
     aqi_counties = cleaned_aqi_df['county'].unique()
     missing_counties_aqi = set(all_counties) - set(aqi_counties)
+    print("Counties missing across all years in AQI data:", missing_counties_aqi)
 
     # find rows with null values in ashtma data
     missing_counties_asthma = cleaned_asthma_df[cleaned_asthma_df.isnull().any(axis=1)]
+    print("Counties that have missing asthma data:", missing_counties_asthma['county'].unique())
 
-    return missing_counties_aqi, missing_counties_asthma
+    # print the subdataframe of specific years that counties have null values
+    print("Subdataframe with specific years:")
+    print(missing_counties_asthma)
 
-# check aqi data counties appear consistently (all numbers should be equal)
-year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
-#print(year_counts.sort_values())
+
+
 
 # list of all county names in california
 all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
@@ -82,15 +93,12 @@ all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', '
                 'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
                 'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
 
-# print counties with null values
-print(missing_counties_asthma['county'].unique())
-
-# print the entire rows with null values
-print(missing_counties_asthma)
 
 
-####deal with null data
+clean_aqi = clean_aqi_quality_data(2017, 5, 'raw_data')
+clean_asthma = clean_asthma_ed_visits_data(2017, 5, 'raw_data')
 
+#find_missing_data(clean_aqi, clean_asthma, all_counties)
 
 
 # merge cleaned data sets
