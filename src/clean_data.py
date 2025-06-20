@@ -19,7 +19,7 @@ def clean_aqi_quality_data(aqi_df) :
 def clean_asthma_ed_visits_data(asthma_df, year) :
     # clean up the dataframe
     asthma_df.columns = asthma_df.columns.str.strip().str.lower().str.replace(' ', '_')
-    asthma_df.rename(columns={'counties': 'county', 'age-adjusted_rate_per_10_000': 'asthma_rate'}, inplace=True)
+    asthma_df.rename(columns={'counties': 'county', 'age-adjusted_rate_per_10,000': 'asthma_rate'}, inplace=True)
 
     # filter dataframe
     asthma_df = asthma_df[asthma_df['county'] != 'California']  # remove rows with 'California' in county name
