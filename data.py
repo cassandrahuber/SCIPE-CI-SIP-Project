@@ -52,6 +52,7 @@ def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
 
 
 
+
 # note: not necessary to run this function, but useful for checking data (merging automatically ignores missing data pairs)
 # check if all counties data for all years
 def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
@@ -80,18 +81,11 @@ def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
 
 
 
-# list of all county names in california
-all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
-                'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
-                'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
-                'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
-                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',                    'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
-                'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
-                'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
-                'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
 
 
 
+
+# merge cleaned data sets
 def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df) :
     # merge cleaned data sets
     merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
@@ -102,6 +96,19 @@ def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df) :
     #print(f"Years covered: ", merged_data_timeframe)
 
     return merged_data, merged_data_timeframe
+
+
+
+
+# list of all county names in california
+all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', 'Contra Costa',
+                'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
+                'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
+                'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
+                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',                    'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
+                'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
+                'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
+                'Tuolumne', 'Ventura', 'Yolo', 'Yuba']
 
 
 if __name__ == "__main__":
