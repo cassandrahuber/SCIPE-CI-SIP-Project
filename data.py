@@ -119,3 +119,8 @@ if __name__ == "__main__":
 
     merged_data, merged_data_timeframe = merge_cleaned_data(clean_aqi, clean_asthma)
     merged_data.to_csv('processed_data/merged_data_' + merged_data_timeframe + '.csv')
+
+
+### may make test_data.py and convert to clean_data.py in src, where may use glob
+### may figure out how to use glob to load all files
+### may clean up code formatting
