@@ -103,7 +103,8 @@ all_counties = ['Alameda', 'Alpine', 'Amador', 'Butte', 'Calaveras', 'Colusa', '
                 'Del Norte', 'El Dorado', 'Fresno', 'Glenn', 'Humboldt', 'Imperial', 'Inyo',
                 'Kern', 'Kings', 'Lake', 'Lassen', 'Los Angeles', 'Madera', 'Marin', 'Mariposa',
                 'Mendocino', 'Merced', 'Modoc', 'Mono', 'Monterey', 'Napa', 'Nevada', 'Orange',
-                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',                    'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
+                'Placer', 'Plumas', 'Riverside', 'Sacramento', 'San Benito', 'San Bernardino',
+                'San Diego', 'San Francisco', 'San Joaquin', 'San Luis Obispo', 'San Mateo',
                 'Santa Barbara', 'Santa Clara', 'Santa Cruz', 'Shasta', 'Sierra', 'Siskiyou',
                 'Solano', 'Sonoma', 'Stanislaus', 'Sutter', 'Tehama', 'Trinity', 'Tulare',
                 'Tuolumne', 'Ventura', 'Yolo', 'Yuba']

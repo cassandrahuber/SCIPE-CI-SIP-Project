@@ -1,4 +1,4 @@
-,county,year,"age-adjusted_rate_per_10,000",number_of_cases
+,county,year,asthma_rate,number_of_cases
 0,Alameda,2017,56.04,8916.0
 1,Alpine,2017,,
 2,Amador,2017,56.02,175.0

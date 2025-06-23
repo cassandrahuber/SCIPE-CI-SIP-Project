@@ -1,4 +1,4 @@
-,county,year,days_with_aqi,good_days,moderate_days,unhealthy_for_sensitive_groups_days,unhealthy_days,very_unhealthy_days,hazardous_days,max_aqi,90th_percentile_aqi,median_aqi,days_co,days_no2,days_ozone,days_pm2.5,days_pm10,"age-adjusted_rate_per_10,000",number_of_cases
+,county,year,days_with_aqi,good_days,moderate_days,unhealthy_for_sensitive_groups_days,unhealthy_days,very_unhealthy_days,hazardous_days,max_aqi,90th_percentile_aqi,median_aqi,days_co,days_no2,days_ozone,days_pm2.5,days_pm10,asthma_rate,number_of_cases
 0,Alameda,2017,365,106,245,9,4,1,0,205,78,56,0,6,51,308,0,56.04,8916.0
 1,Amador,2017,362,291,67,4,0,0,0,136,64,38,0,0,362,0,0,56.02,175.0
 2,Butte,2017,365,100,241,23,1,0,0,155,95,59,0,0,150,213,2,45.29,935.0
