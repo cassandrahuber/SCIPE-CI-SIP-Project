@@ -7,6 +7,10 @@ df = pd.read_csv("../processed_data/merged_data_2017-2021.csv")
 # drop auto‐generated index column
 df = df.drop(columns=["Unnamed: 0"])
 
+
+
+
+
 # simple OLS regression model
 # note: this fit does not account for the whole strength of the relationship
 
