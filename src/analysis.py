@@ -1,17 +1,23 @@
 import pandas as pd
+from scipy import stats
+import matplotlib.pyplot as plt
+import statsmodels.formula.api as smf
 
 # load clean merged data
 df = pd.read_csv("../processed_data/merged_data_2017-2021.csv")
 df = df.drop(columns=["Unnamed: 0"]) # remove index column
 
-
-# basic exploration
+# data overview:
 print(f"Dataset shape: {df.shape}")
 print(f"Counties: {df['county'].nunique()}")
 print(f"Years: {df['year'].unique()}")
 #print(f"\nMissing values: {df.isnull().sum()}")
 #print(df.describe())
 
+
+
+
+# bastic statistics of the data:
 
 # which counties have the highest median aqi?
 worst_aqi = df.groupby('county')['median_aqi'].mean().sort_values(ascending=False).head(10)
@@ -26,9 +32,6 @@ print(highest_asthma)
 ##may add the worst aqi counties's asthma rates to the table
 ##may add the highest asthma counties's aqi to the table
 
-
-from scipy import stats
-
 # correlation analysis (pearson's correlation)
 # note: this is a simple correlation, not accounting for county or year
 correlation = df['median_aqi'].corr(df['asthma_rate'])
@@ -40,11 +43,11 @@ slope, intercept, r_value, p_value, std_err = stats.linregress(df['median_aqi'],
 print(f"R-squared: {r_value**2:.3f}, P-value: {p_value:.3f}")
 
 
-import matplotlib.pyplot as plt
+
 
 # simple visualizations of the relationship between aqi and asthma rates:
 
-#  median aqi vs asthma rate - scatter plot
+# median aqi vs. asthma rate - scatter plot
 # note: not accounting for county or year
 plt.figure(figsize=(10, 6))
 plt.scatter(df['median_aqi'], df['asthma_rate'], alpha=0.6)
@@ -81,23 +84,18 @@ plt.show()
 
 
 
-
 # using models to explore further on the complex relationship:
 
-import statsmodels.formula.api as smf
-
-# simple OLS regression model
+# simple OLS regression model 
+# "only aqi vs. asthma rate"
 # note: this fit does not account for the whole strength of the relationship
-
-# "only aqi vs asthma rate"
-#model = smf.ols("asthma_rate ~ median_aqi", data=df).fit()
-#print(model.summary())
+model = smf.ols("asthma_rate ~ median_aqi", data=df).fit()
+print(model.summary())
 
 
-# multiple OLS regression model
+# multiple OLS regression model 
+# "aqi vs. asthma rate by county and year"
 # note: more complex model but gave much more stronger relationship between aqi and asthma rate
-
-# "aqi vs asthma rate by county and year"
 mod = smf.ols('asthma_rate ~ median_aqi + C(county) + C(year)', data=df).fit()
 print(mod.summary())
 
@@ -108,12 +106,10 @@ residuals = mod.resid
 
 
 
-###
-import matplotlib.pyplot as plt
 
 # visualizations of the regression results:
 
-# actual vs predicted scatter plot
+# actual vs. predicted scatter plot
 plt.figure(figsize=(6,6))
 plt.scatter(y, y_pred, alpha=0.5)
 plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
