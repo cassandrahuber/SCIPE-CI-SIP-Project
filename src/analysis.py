@@ -112,6 +112,7 @@ residuals = mod.resid
 # actual vs. predicted scatter plot
 plt.figure(figsize=(6,6))
 plt.scatter(y, y_pred, alpha=0.5)
+# creating red dashed line that represents perfect predictions (predicted = observed)
 plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
 plt.xlabel('Observed asthma_rate')
 plt.ylabel('Predicted asthma_rate')
