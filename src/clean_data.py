@@ -85,6 +85,10 @@ def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
 
 # merge cleaned data sets
 def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df) :
+    # drop rows where either aqi or asthma data contains NaN values
+    cleaned_aqi_df = cleaned_aqi_df.dropna()
+    cleaned_asthma_df = cleaned_asthma_df.dropna()
+
     # merge cleaned data sets
     merged_data = pd.merge(cleaned_aqi_df, cleaned_asthma_df, on=['county', 'year'], how='inner')
     merged_data_timeframe = str(merged_data['year'].min()) + "-" + str(merged_data['year'].max())
@@ -116,7 +120,7 @@ if __name__ == "__main__":
     #clean_aqi.to_csv('processed_data/cleaned_aqi.csv')
     #clean_asthma.to_csv('processed_data/cleaned_asthma.csv')
 
-    #find_missing_data(clean_aqi, clean_asthma, all_counties)
+    #check_missing_data(clean_aqi, clean_asthma, all_counties)
 
     merged_data, merged_data_timeframe = merge_cleaned_data(clean_aqi, clean_asthma)
     merged_data.to_csv('processed_data/merged_data_' + merged_data_timeframe + '.csv')
