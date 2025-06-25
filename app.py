@@ -14,6 +14,9 @@ def load_data(path):
         df['y_pred']   = mod.fittedvalues
         df['residual'] = mod.resid
 
+    # Convert column names to title case
+    df.columns = df.columns.str.title()
+
     return df
 
 
@@ -36,10 +39,9 @@ def create_actual_vs_predicted_chart(df) :
                 'year:O',
                 alt.Tooltip('asthma_rate:Q', title='Observed'),
                 alt.Tooltip('y_pred:Q',      title='Predicted'),
-                alt.Tooltip('residual:Q',    title='Residual'),
             ]
         )
-        .add_selection(brush)
+        .add_params(brush)
     )
 
     line = (
@@ -52,8 +54,7 @@ def create_actual_vs_predicted_chart(df) :
         alt.layer(points, line)
            .properties(
                width=500,
-               height=500,
-               title='Actual vs. Predicted Asthma ED Rate'
+               height=500
            )
            .interactive()
     )
