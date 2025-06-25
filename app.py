@@ -14,9 +14,6 @@ def load_data(path):
         df['y_pred']   = mod.fittedvalues
         df['residual'] = mod.resid
 
-    # Convert column names to title case
-    df.columns = df.columns.str.title()
-
     return df
 
 
@@ -25,23 +22,20 @@ def create_actual_vs_predicted_chart(df) :
     high = df[['asthma_rate','y_pred']].max().max()
     diag = pd.DataFrame({ 'asthma_rate': [low, high], 'y_pred': [low, high] })
 
-    brush = alt.selection_interval()
-
     points = (
         alt.Chart(df)
         .mark_point(filled=True, size=60, opacity=0.6)
         .encode(
             x=alt.X('asthma_rate:Q', title='Observed rate'),
-            y=alt.Y('y_pred:Q',       title='Predicted rate'),
-            color=alt.condition(brush, 'year:O', alt.value('lightgray')),
+            y=alt.Y('y_pred:Q', title='Predicted rate'),
+            color='year:O',
             tooltip=[
-                'county:N',
-                'year:O',
+                alt.Tooltip('county:N', title='County'),
+                alt.Tooltip('year:O', title='Year'),
                 alt.Tooltip('asthma_rate:Q', title='Observed'),
-                alt.Tooltip('y_pred:Q',      title='Predicted'),
+                alt.Tooltip('y_pred:Q', title='Predicted'),
             ]
         )
-        .add_params(brush)
     )
 
     line = (
@@ -64,6 +58,14 @@ def main():
     st.title("AQI vs. Asthma ED Rate: OLS Diagnostics")
 
     df = load_data('processed_data/ols_results.csv')
+
+    years   = sorted(df['year'].unique())
+    counties = sorted(df['county'].unique())
+
+    st.sidebar.header("Filter Data")
+
+
+
     chart = create_actual_vs_predicted_chart(df)
     st.altair_chart(chart, use_container_width=True)
 
@@ -71,8 +73,7 @@ def main():
         """
         **Instructions:**  
         - **Zoom/Pan:** scroll or drag edges  
-        - **Brush:** click-drag to highlight by year  
-        - **Tooltip:** hover for county, year, residual  
+        - **Tooltip:** hover for county, year  
         """
     )
 
