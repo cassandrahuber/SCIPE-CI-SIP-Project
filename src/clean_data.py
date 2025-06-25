@@ -1,7 +1,7 @@
 import pandas as pd
 
 # clean air quality data:
-def clean_aqi_quality_data(start_year, num_years, input_folder) :
+def clean_aqi_quality_data(start_year, num_years, input_folder):
     aqi_df = []
     for i in range(num_years) :
         # load the data into a dataframe
@@ -24,7 +24,7 @@ def clean_aqi_quality_data(start_year, num_years, input_folder) :
 
 
 # clean asthma emergency department visits data
-def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
+def clean_asthma_ed_visits_data(start_year, num_years, input_folder):
     asthma_df = []
     for i in range(num_years) :
         # load the data into a dataframe
@@ -55,7 +55,7 @@ def clean_asthma_ed_visits_data(start_year, num_years, input_folder) :
 
 # note: not necessary to run this function, but useful for checking data (merging automatically ignores missing data pairs)
 # check if all counties data for all years
-def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
+def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties):
     # check aqi data counties appear consistently (all numbers should be equal)
     year_counts = cleaned_aqi_df.groupby('county')['year'].nunique()
     if year_counts.nunique() == 1 :
@@ -84,7 +84,7 @@ def check_missing_data(cleaned_aqi_df, cleaned_asthma_df, all_counties) :
 
 
 # merge cleaned data sets
-def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df) :
+def merge_cleaned_data(cleaned_aqi_df, cleaned_asthma_df):
     # drop rows where either aqi or asthma data contains NaN values
     cleaned_aqi_df = cleaned_aqi_df.dropna()
     cleaned_asthma_df = cleaned_asthma_df.dropna()

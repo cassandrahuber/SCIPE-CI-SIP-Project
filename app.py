@@ -8,7 +8,7 @@ def load_data(path):
     df = pd.read_csv(path)
     
     # Check to ensure predictions & residuals exist in dataframe
-    if 'y_pred' not in df or 'residual' not in df:
+    if 'y_pred' not in df or 'residual' not in df :
         import statsmodels.formula.api as smf
         mod = smf.ols('asthma_rate ~ median_aqi + C(county) + C(year)', data=df).fit()
         df['y_pred'] = mod.fittedvalues
@@ -17,7 +17,7 @@ def load_data(path):
     return df
 
 
-def create_actual_vs_predicted_chart(df) :
+def create_actual_vs_predicted_chart(df, selected_years):
     low = df[['asthma_rate','y_pred']].min().min()
     high = df[['asthma_rate','y_pred']].max().max()
     diag = pd.DataFrame({ 'asthma_rate': [low, high], 'y_pred': [low, high] })
@@ -36,6 +36,8 @@ def create_actual_vs_predicted_chart(df) :
                 alt.Tooltip('y_pred:Q', title='Predicted'),
             ]
         )
+        .transform_filter(alt.FieldOneOfPredicate(field='year', oneOf=selected_years))  # Filter based on selected years
+
     )
 
     line = (
@@ -64,14 +66,34 @@ def main():
 
 
 
-    chart = create_actual_vs_predicted_chart(df)
+    # Year selection with an "All" option
+    selected_years = st.sidebar.multiselect("Select year(s):", ['All'] + years, default=['All'])
+
+    # County selection
+    selected_counties = st.sidebar.multiselect("Select county(ies):", ['All'] + counties, default=['All'])
+
+    # If "All" is selected, show all years
+    if 'All' in selected_years:
+        selected_years = years
+
+    if 'All' in selected_counties 
+
+    # Apply filters to the dataframe
+    filtered = df[df['year'].isin(selected_years) & df['county'].isin(selected_counties)]
+
+    # Display number of data points being shown
+    st.markdown(f"**Showing {len(filtered)} points** — {len(selected_counties)} counties × {len(selected_years)} years")
+
+    # Render the chart
+    chart = create_actual_vs_predicted_chart(filtered, selected_years)
+
     st.altair_chart(chart, use_container_width=True)
 
     st.markdown(
         """
         **Instructions:**  
         - **Zoom/Pan:** scroll or drag edges  
-        - **Tooltip:** hover for county, year, observed, and predicted
+        - **Tooltip:** hover over points for details
         """
     )
 
