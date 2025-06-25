@@ -1,7 +1,9 @@
 import pandas as pd
+import numpy as np
 import altair as alt
 import streamlit as st
-import numpy as np
+
+
 
 @st.cache_data
 def load_data(path):
@@ -133,6 +135,7 @@ def main():
 
     #if len(selected_years) != 1:
     #    st.markdown("Median AQI is averaged across selected years")
+
 
 if __name__ == "__main__":
     main()
