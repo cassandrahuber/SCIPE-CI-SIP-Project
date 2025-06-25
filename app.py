@@ -1,6 +1,7 @@
 import pandas as pd
 import altair as alt
 import streamlit as st
+import numpy as np
 
 @st.cache_data
 def load_data(path):
@@ -16,6 +17,26 @@ def load_data(path):
 
     return df
 
+def create_worst_aqi_chart(df, selected_years):
+    worst_aqi = df[df['year'].isin(selected_years)].groupby('county')['median_aqi'].mean().sort_values(ascending=False).head(10)
+
+    # Convert to a dataframe
+    worst_aqi = worst_aqi.reset_index()
+
+    return (
+        alt.Chart(worst_aqi)
+            .mark_bar()
+            .encode(
+                x=alt.X('median_aqi:Q', title='Median AQI', axis=alt.Axis(tickCount=10)),
+                y=alt.Y('county:N', sort='-x', title='County'),
+                color=alt.Color('county:N', legend=None),
+                tooltip=[
+                    alt.Tooltip('county:N', title='County'),
+                    alt.Tooltip('median_aqi:Q', title='Median Aqi')
+                ]
+            )
+            .properties(title=f'Top 10 Counties With the Worst Median AQI', width=400, height=400)
+    )
 
 def create_actual_vs_predicted_chart(df, selected_years):
     low = df[['asthma_rate','y_pred']].min().min()
@@ -26,18 +47,17 @@ def create_actual_vs_predicted_chart(df, selected_years):
         alt.Chart(df)
         .mark_point(filled=True, size=60, opacity=0.6)
         .encode(
-            x=alt.X('asthma_rate:Q', title='Observed rate'),
+            x=alt.X('asthma_rate:Q', title='Observed rate', axis=alt.Axis(tickCount=10)),
             y=alt.Y('y_pred:Q', title='Predicted rate'),
             color=alt.Color('year:O', scale=alt.Scale(scheme='category10')),
             tooltip=[
                 alt.Tooltip('county:N', title='County'),
                 alt.Tooltip('year:O', title='Year'),
                 alt.Tooltip('asthma_rate:Q', title='Observed'),
-                alt.Tooltip('y_pred:Q', title='Predicted'),
+                alt.Tooltip('y_pred:Q', title='Predicted')
             ]
         )
-        .transform_filter(alt.FieldOneOfPredicate(field='year', oneOf=selected_years))  # Filter based on selected years
-
+        .transform_filter(alt.FieldOneOfPredicate(field='year', oneOf=selected_years))  # filter based on selected years
     )
 
     line = (
@@ -48,14 +68,15 @@ def create_actual_vs_predicted_chart(df, selected_years):
 
     return (
         alt.layer(points, line)
-            .properties(width=600, height=600, title='Actual vs. Predicted Asthma ED Rate')
+            .properties(title='Actual vs. Predicted Asthma ED Rate', width=600, height=600)
             .configure_view(fill="white")
             .interactive()
     )
 
 def main():
     st.set_page_config(page_title="AQI→Asthma Dashboard")
-    st.title("AQI vs. Asthma ED Rate: OLS Diagnostics")
+    st.title("California Air Quality & Asthma Emergency Department Visits Analysis")
+    #st.title("AQI vs. Asthma ED Rate: OLS Diagnostics")
 
     df = load_data('processed_data/ols_results.csv')
 
@@ -69,20 +90,21 @@ def main():
     # Year selection with an "All" option
     selected_years = st.sidebar.multiselect("Select year(s):", ['All'] + years, default=['All'])
 
-    # County selection
+    # County selection with an "All" option
     selected_counties = st.sidebar.multiselect("Select county(ies):", ['All'] + counties, default=['All'])
 
     # If "All" is selected, show all years
     if 'All' in selected_years:
         selected_years = years
 
-    if 'All' in selected_counties 
+    if 'All' in selected_counties:
+        selected_counties = counties 
 
     # Apply filters to the dataframe
     filtered = df[df['year'].isin(selected_years) & df['county'].isin(selected_counties)]
 
-    # Display number of data points being shown
-    st.markdown(f"**Showing {len(filtered)} points** — {len(selected_counties)} counties × {len(selected_years)} years")
+
+    st.subheader("AQI vs. Asthma ED Rate: OLS Diagnostics")
 
     # Render the chart
     chart = create_actual_vs_predicted_chart(filtered, selected_years)
@@ -96,6 +118,13 @@ def main():
         - **Tooltip:** hover over points for details
         """
     )
+
+
+    top_aqi_chart = create_worst_aqi_chart(filtered, selected_years)
+    st.altair_chart(top_aqi_chart, use_container_width=True)
+
+    if len(selected_years) != 1:
+        st.markdown("Median AQI is averaged across selected years")
 
 
 if __name__ == "__main__":
