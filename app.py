@@ -46,10 +46,7 @@ def create_actual_vs_predicted_chart(df) :
 
     return (
         alt.layer(points, line)
-           .properties(
-               width=500,
-               height=500
-           )
+           .properties(width=600, height=600, title='Actual vs. Predicted Asthma ED Rate')
            .interactive()
     )
 
