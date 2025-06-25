@@ -17,25 +17,28 @@ def load_data(path):
 
     return df
 
-def create_worst_aqi_chart(df, selected_years):
-    worst_aqi = df[df['year'].isin(selected_years)].groupby('county')['median_aqi'].mean().sort_values(ascending=False).head(10)
+
+def top_ten_highest_chart(df, selected_years, feature, feature_title):
+    #feature_title = str(feature).title().replace('_', ' ')
+
+    highest_of_feature = df[df['year'].isin(selected_years)].groupby('county')[feature].mean().sort_values(ascending=False).head(10)
 
     # Convert to a dataframe
-    worst_aqi = worst_aqi.reset_index()
+    highest_of_feature = highest_of_feature.reset_index()
 
     return (
-        alt.Chart(worst_aqi)
+        alt.Chart(highest_of_feature)
             .mark_bar()
             .encode(
-                x=alt.X('median_aqi:Q', title='Median AQI', axis=alt.Axis(tickCount=10)),
+                x=alt.X(f'{feature}:Q', title=feature_title, axis=alt.Axis(tickCount=10)),
                 y=alt.Y('county:N', sort='-x', title='County'),
-                color=alt.Color('county:N', legend=None),
+                color=alt.Color('county:N', scale=alt.Scale(scheme='yellowgreenblue'), legend=None), ####pastel2, lightmulti, purplered, teals, purples
                 tooltip=[
                     alt.Tooltip('county:N', title='County'),
-                    alt.Tooltip('median_aqi:Q', title='Median Aqi')
+                    alt.Tooltip(f'{feature}:Q', title=feature_title)
                 ]
             )
-            .properties(title=f'Top 10 Counties With the Worst Median AQI', width=400, height=400)
+            .properties(title=f'Top 10 Counties With Highest {feature_title}', width=400, height=400)
     )
 
 def create_actual_vs_predicted_chart(df, selected_years):
@@ -49,7 +52,7 @@ def create_actual_vs_predicted_chart(df, selected_years):
         .encode(
             x=alt.X('asthma_rate:Q', title='Observed rate', axis=alt.Axis(tickCount=10)),
             y=alt.Y('y_pred:Q', title='Predicted rate'),
-            color=alt.Color('year:O', scale=alt.Scale(scheme='category10')),
+            color=alt.Color('year:O', scale=alt.Scale(scheme='yellowgreenblue')),
             tooltip=[
                 alt.Tooltip('county:N', title='County'),
                 alt.Tooltip('year:O', title='Year'),
@@ -120,12 +123,16 @@ def main():
     )
 
 
-    top_aqi_chart = create_worst_aqi_chart(filtered, selected_years)
+    top_asthma_chart = top_ten_highest_chart(filtered, selected_years, 'asthma_rate', 'Asthma ED Rate')
+    st.altair_chart(top_asthma_chart, use_container_width=True)
+
+
+
+    top_aqi_chart = top_ten_highest_chart(filtered, selected_years, 'median_aqi', 'Median AQI')
     st.altair_chart(top_aqi_chart, use_container_width=True)
 
-    if len(selected_years) != 1:
-        st.markdown("Median AQI is averaged across selected years")
-
+    #if len(selected_years) != 1:
+    #    st.markdown("Median AQI is averaged across selected years")
 
 if __name__ == "__main__":
     main()

@@ -52,7 +52,7 @@ print(f"R-squared: {r_value**2:.3f}, P-value: {p_value:.3f}")
 plt.figure(figsize=(10, 6))
 plt.scatter(df['median_aqi'], df['asthma_rate'], alpha=0.6)
 plt.xlabel('Median AQI')
-plt.ylabel('Asthma ED Rate per 100k')
+plt.ylabel('Asthma ED Rate per 10k')
 plt.title('Air Quality vs Asthma Emergency Department Visits')
 plt.show()
 
