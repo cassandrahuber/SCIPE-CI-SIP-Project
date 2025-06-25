@@ -11,7 +11,7 @@ def load_data(path):
     if 'y_pred' not in df or 'residual' not in df:
         import statsmodels.formula.api as smf
         mod = smf.ols('asthma_rate ~ median_aqi + C(county) + C(year)', data=df).fit()
-        df['y_pred']   = mod.fittedvalues
+        df['y_pred'] = mod.fittedvalues
         df['residual'] = mod.resid
 
     return df
@@ -28,7 +28,7 @@ def create_actual_vs_predicted_chart(df) :
         .encode(
             x=alt.X('asthma_rate:Q', title='Observed rate'),
             y=alt.Y('y_pred:Q', title='Predicted rate'),
-            color='year:O',
+            color=alt.Color('year:O', scale=alt.Scale(scheme='category10')),
             tooltip=[
                 alt.Tooltip('county:N', title='County'),
                 alt.Tooltip('year:O', title='Year'),
@@ -46,8 +46,9 @@ def create_actual_vs_predicted_chart(df) :
 
     return (
         alt.layer(points, line)
-           .properties(width=600, height=600, title='Actual vs. Predicted Asthma ED Rate')
-           .interactive()
+            .properties(width=600, height=600, title='Actual vs. Predicted Asthma ED Rate')
+            .configure_view(fill="white")
+            .interactive()
     )
 
 def main():
@@ -70,7 +71,7 @@ def main():
         """
         **Instructions:**  
         - **Zoom/Pan:** scroll or drag edges  
-        - **Tooltip:** hover for county, year  
+        - **Tooltip:** hover for county, year, observed, and predicted
         """
     )
 
