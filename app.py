@@ -299,8 +299,8 @@ def main():
         st.subheader("Initial Analysis")
         st.markdown("""
         - The simple scatter plot and linear fit between median AQI and asthma rates shows almost no meaningful link across all counties and years 
-        (only about 1% of the total variation explained)
-        """)
+        (only about 2% of the total variation explained)
+        """)##########################fix
         simple_scatter = px.scatter(filtered, x='median_aqi', y='asthma_rate', 
                             title=f'Asthma ER Rates vs Median AQI',
                             labels={'county': 'County',
@@ -360,56 +360,62 @@ def main():
         Most errors cluster near zero, indicating the model isn't systematically over or under predicting.
         """)
 
+    with tab4:
+        st.header("Understanding the Statistical Model")
+        st.markdown("""
+        **What is a regression model?** Think of it like a recipe that helps us understand what ingredients contribute to asthma rates.
+        """)
 
+        st.markdown("""
+        - The model examines past asthma rates in each county to establish a “usual” rate for that location and measures how much rates rise when AQI changes—so it captures both the location effect and the air quality effect.
+        - It then adjusts those baseline and AQI effect numbers so its predictions line up as closely as possible with the actual data, highlighting each factor's impact
+        """)
 
+        # Model results in plain English
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.info("""
+            **Model Statistics:**
+            - **Accuracy (R-squared)**: 87.56%
+            - **Sample Size**: 529 observations
+            - **Counties**: 53 different counties
+            - **Time Period**: 2013-2022
+            - **Statistical Significance**: Very strong (p < 0.001)
+            """)
+            
+        with col2:
+            st.success("""
+            **What This Means:**
+            - The model can explain 87.56% of why asthma rates vary
+            - Studied 529 data points across 10 years
+            - The results are statistically reliable
+            - We can be confident the findings aren't due to chance
+            """)
+
+        # Comparison with simple analysis
+        st.warning("""
+        **Why The First Analysis Was Wrong:**
+        
+        **Simple Analysis**: "Air quality and asthma barely correlate" (R² ≈ 0.02)
+        
+        **Advanced Analysis**: "After accounting for location, air quality does matter" (R² = 0.876)
+        
+        Sometimes you need to control for confounding factors to see the real relationships!
+        """)
 
 
     st.markdown("---")
 
-    # 8. Data Table & Download
+    # Data Table & Download
     st.header("Data Table")
-    st.dataframe(filtered)
-    csv = filtered.to_csv(index=False).encode('utf-8')
-    st.download_button("Download filtered data", csv, "filtered_data.csv", "text/csv")
+    st.dataframe(df)
 
-  
+    csv = df.to_csv(index=False).encode('utf-8')
+    #filtered_csv = filtered.to_csv(index=False).encode('utf-8')
 
-
-    st.header("Key Results")  
-    # 1. Model KPIs
-    # give users an at a glance sense of how well the model fits
-    metrics = compute_model_metrics(df, model)
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("R²",        f"{metrics['r2']:.3f}")
-    col2.metric("Adj. R²",   f"{metrics['adj_r2']:.3f}")
-    col3.metric("RMSE",      f"{metrics['rmse']:.3f}")
-    col4.metric("Slope (AQI)", f"{metrics['slope']:.3f}")
-    col5.metric("Slope p-value", f"{metrics['slope_p']:.3f}")
-
-    st.markdown("""
-    Model explains **87.6%** of the variation in asthma rates,  
-    predicts to within **±5.8 visits** per 10,000 in-sample (±7.5 out-of-sample),  
-    and finds each **10-point AQI increase** raises asthma visits by **~2 per 10,000** _(p=0.001)_.
-    """)
-
-
-        # 4. Key Findings
-    st.header("Key Findings")
-    st.markdown("**Used a regression model** to estimate how annual AQI and county/year differences relate to asthma ED rates.")
-    metrics = {
-        'r2': model.rsquared,
-        'slope': model.params['median_aqi'],
-        'rmse': np.sqrt(mean_squared_error(df['asthma_rate'], df['y_pred']))
-    }
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Explained Variation (R²)", f"{metrics['r2']:.3f}",
-              help="Share of asthma rate changes explained by AQI and fixed effects")
-    c2.metric("AQI Effect", f"{metrics['slope']*10:.2f} ▲ visits per 10k per 10 AQI",
-              help="Expected increase in ED visits for a 10-point AQI rise")
-    c3.metric("Typical Error", f"±{metrics['rmse']:.1f} visits per 10k",
-              help="Average difference between predicted and actual rates")
-
-    st.markdown("**Interpretation:** The model fits well and confirms the hypothesis: poorer air quality predicts more asthma visits.")
+    st.download_button("Download data as CSV", csv, "aqi_asthma.csv", "text/csv")
+    #st.download_button("Download filtered data as CSV", filtered_csv, "filtered_aqi_asthma.csv", "text/csv")
 
 
 if __name__ == "__main__":
