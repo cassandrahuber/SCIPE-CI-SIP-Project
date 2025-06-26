@@ -2,11 +2,10 @@ import pandas as pd
 import numpy as np
 import altair as alt
 import streamlit as st
+import plotly.express as px
 
 from sklearn.metrics import mean_squared_error
 import statsmodels.formula.api as smf
-
-import plotly.express as px
 
 
 @st.cache_data
@@ -103,13 +102,20 @@ def plot_top_ten_counties_by_metric(df, years, metric, title):
 
 
 
-def plot_time_series(df, group_by, color, title):
+def plot_time_series(df, group_by, color, title, show_covid):
     yearly_avg = df.groupby(group_by)['asthma_rate'].mean().reset_index()
 
-    return px.line(yearly_avg, x='year', y='asthma_rate', color=color, title=title,
+    ts = px.line(yearly_avg, x='year', y='asthma_rate', color=color, title=title,
                     labels={'asthma_rate': 'ER Visits per 10,000 People', 'year': 'Year'},
                     width=600,
                     height=600)
+    
+    if show_covid:
+        ts.add_vrect(x0=2019.5, x1=2021.5, fillcolor="red", opacity=0.2, 
+                    annotation_text="COVID-19 Period", annotation_position="top left")
+        
+    return ts
+
 
 
 
@@ -151,7 +157,7 @@ def main():
     with col2:
         st.info("""
         **My Hypothesis:**
-        I expected that counties with poorer air quality would have higher rates of asthma ED visits.
+        Counties with poorer air quality would have higher rates of asthma ED visits
         """)
         
     with st.expander("What is AQI?"):
@@ -251,6 +257,8 @@ def main():
     if selected_counties:
         filtered =  filtered[filtered['county'].isin(selected_counties)]
 
+    # Covid filter
+    show_covid = st.sidebar.checkbox("Highlight COVID-19 Impact", value=True)
 
     # Tab layout for different analyses
     tab1, tab2, tab3, tab4 = st.tabs([
@@ -268,7 +276,7 @@ def main():
 
         with col1:
             # Time series plot
-            yearly_ts_chart = plot_time_series(df, 'year', None, 'Average Asthma ER Visits by Year (All Counties)')
+            yearly_ts_chart = plot_time_series(df, 'year', None, 'Average Asthma ER Visits by Year (All Counties)', show_covid)
             st.plotly_chart(yearly_ts_chart, use_container_width=True)
 
         with col2:
@@ -285,7 +293,7 @@ def main():
 
         # County comparison over time
         if selected_counties:
-            county_ts_chart = plot_time_series(filtered, ['year', 'county'], 'county', 'Average Asthma ER Visits by Year (Your Selected Counties)')
+            county_ts_chart = plot_time_series(filtered, ['year', 'county'], 'county', 'Average Asthma ER Visits by Year (Your Selected Counties)', show_covid)
             st.plotly_chart(county_ts_chart, use_container_width=True)
 
         st.subheader("Top 10 Counties by Metric Across Selected Years")
@@ -299,8 +307,9 @@ def main():
         st.subheader("Initial Analysis")
         st.markdown("""
         - The simple scatter plot and linear fit between median AQI and asthma rates shows almost no meaningful link across all counties and years 
-        (only about 2% of the total variation explained)
-        """)##########################fix
+        (only about 1.2% of the total variation explained)
+        - Realized the relationship between AQI and asthma rates is possibly more complex (hidden by other factors ie: year and county)
+        """)
         simple_scatter = px.scatter(filtered, x='median_aqi', y='asthma_rate', 
                             title=f'Asthma ER Rates vs Median AQI',
                             labels={'county': 'County',
@@ -326,7 +335,7 @@ def main():
             st.metric("Relationship Strength", strength)
         
 
-        st.subheader("Regression Model Findings")
+        st.header("Solution: Multiple Regression Model")
         st.markdown("""
         - The model accounts for differences between counties and years so it measures the AQI effect directly
         - It shows a **positive, statistically significant link:**
@@ -397,7 +406,7 @@ def main():
         st.warning("""
         **Why The First Analysis Was Wrong:**
         
-        **Simple Analysis**: "Air quality and asthma barely correlate" (R² ≈ 0.02)
+        **Simple Analysis**: "Air quality and asthma barely correlate" (R² ≈ 0.012)
         
         **Advanced Analysis**: "After accounting for location, air quality does matter" (R² = 0.876)
         
