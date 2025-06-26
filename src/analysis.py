@@ -102,7 +102,7 @@ print(mod.summary())
 # extracting the observed, predicted, and residuals
 y = df['asthma_rate']
 y_pred  = mod.fittedvalues
-residuals = mod.resid
+residuals = df['asthma_rate'] - df['y_pred']
 
 
 
