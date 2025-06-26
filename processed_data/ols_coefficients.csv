@@ -1,0 +1,64 @@
+term,estimate
+Intercept,45.856238712785256
+C(county)[T.Amador],5.404083635622388
+C(county)[T.Butte],-11.251951531639088
+C(county)[T.Calaveras],-0.9634405481685667
+C(county)[T.Colusa],-10.181863462316995
+C(county)[T.Contra Costa],3.4169823659798424
+C(county)[T.Del Norte],6.938528516711856
+C(county)[T.El Dorado],-14.93653748489024
+C(county)[T.Fresno],7.788515517949335
+C(county)[T.Glenn],-10.653224707784057
+C(county)[T.Humboldt],8.265894195878767
+C(county)[T.Imperial],4.093022067720008
+C(county)[T.Inyo],1.7316079201922867
+C(county)[T.Kern],-8.712400745649402
+C(county)[T.Kings],5.820480249908891
+C(county)[T.Lake],25.588673921794463
+C(county)[T.Los Angeles],-10.033638653753922
+C(county)[T.Madera],-0.37643168076903216
+C(county)[T.Marin],-25.44475775897452
+C(county)[T.Mariposa],-12.197876662637373
+C(county)[T.Mendocino],7.565211406684772
+C(county)[T.Merced],15.052612353892076
+C(county)[T.Mono],-7.410066203159859
+C(county)[T.Monterey],-8.225008867399529
+C(county)[T.Napa],-13.607418503062814
+C(county)[T.Nevada],-16.399035268040418
+C(county)[T.Orange],-23.16987222893764
+C(county)[T.Placer],-21.00562555421248
+C(county)[T.Plumas],0.22460792019228148
+C(county)[T.Riverside],-18.202836860118204
+C(county)[T.Sacramento],6.868189439743688
+C(county)[T.San Benito],1.3676166868129556
+C(county)[T.San Bernardino],-7.389946997160466
+C(county)[T.San Diego],-22.358880995558284
+C(county)[T.San Francisco],-13.29038331318701
+C(county)[T.San Joaquin],6.18936124546715
+C(county)[T.San Luis Obispo],-19.921295143085942
+C(county)[T.San Mateo],-19.02566525595262
+C(county)[T.Santa Barbara],-18.764299576785767
+C(county)[T.Santa Clara],-22.756220274084225
+C(county)[T.Santa Cruz],-16.649744558654156
+C(county)[T.Shasta],-4.742819427655868
+C(county)[T.Siskiyou],-9.101995667079045
+C(county)[T.Solano],21.5477312575549
+C(county)[T.Sonoma],-12.938885530036929
+C(county)[T.Stanislaus],-0.15499556630017244
+C(county)[T.Sutter],-20.02240528012814
+C(county)[T.Tehama],-1.289255542124689
+C(county)[T.Trinity],0.003925030219398543
+C(county)[T.Tulare],-15.29149768237114
+C(county)[T.Tuolumne],-3.871132204762093
+C(county)[T.Ventura],-20.21640528012816
+C(county)[T.Yolo],-11.550881096337172
+C(year)[T.2014],1.1538084917063887
+C(year)[T.2015],1.503241617423443
+C(year)[T.2016],-2.7036755188506234
+C(year)[T.2017],-0.45897182739826714
+C(year)[T.2018],-5.2046322047566935
+C(year)[T.2019],-4.643828473763003
+C(year)[T.2020],-24.000758880701827
+C(year)[T.2021],-24.357867186847837
+C(year)[T.2022],-16.931991536136756
+median_aqi,0.201718057234406

@@ -52,7 +52,7 @@ print(f"R-squared: {r_value**2:.3f}, P-value: {p_value:.3f}")
 plt.figure(figsize=(10, 6))
 plt.scatter(df['median_aqi'], df['asthma_rate'], alpha=0.6)
 plt.xlabel('Median AQI')
-plt.ylabel('Asthma ED Rate per 100k')
+plt.ylabel('Asthma ED Rate per 10k')
 plt.title('Air Quality vs Asthma Emergency Department Visits')
 plt.show()
 
@@ -102,7 +102,7 @@ print(mod.summary())
 # extracting the observed, predicted, and residuals
 y = df['asthma_rate']
 y_pred  = mod.fittedvalues
-residuals = mod.resid
+residuals = df['asthma_rate'] - df['y_pred']
 
 
 
@@ -112,6 +112,7 @@ residuals = mod.resid
 # actual vs. predicted scatter plot
 plt.figure(figsize=(6,6))
 plt.scatter(y, y_pred, alpha=0.5)
+# creating red dashed line that represents perfect predictions (predicted = observed)
 plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
 plt.xlabel('Observed asthma_rate')
 plt.ylabel('Predicted asthma_rate')
