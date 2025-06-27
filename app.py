@@ -106,7 +106,7 @@ def plot_time_series(df, group_by, color, title, show_covid):
     yearly_avg = df.groupby(group_by)['asthma_rate'].mean().reset_index()
 
     ts = px.line(yearly_avg, x='year', y='asthma_rate', color=color, title=title,
-                    labels={'asthma_rate': 'ER Visits per 10,000 People', 'year': 'Year'},
+                    labels={'asthma_rate': 'Asthma ED Visits (per 10k)', 'year': 'Year'},
                     width=600,
                     height=600)
     
@@ -189,7 +189,7 @@ def main():
     counties = sorted(df['county'].unique())
 
     st.subheader("Overview")
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         st.metric("Total Counties", len(counties))
@@ -197,9 +197,7 @@ def main():
         st.metric("Years of Data", f"{years[0]} - {years[-1]}")
     with col3:
         st.metric("Total Observations", len(df))
-    with col4:
-        st.metric("Model Accuracy", f"{model.rsquared:.2%}",
-                  help="Model explains ~88% of why asthma rates differ between counties and years")
+
 
     st.markdown("---")
 
@@ -208,30 +206,30 @@ def main():
 
     st.markdown("""
     **Hypothesis was only partially correct:**
-    Expected air quality to be the main factor, but where you live matters much more than air quality alone!
+    Expected air quality to be the main factor but the relationship is also influenced by other factors like time (year) and location (county)
     """)
 
     col1, col2 = st.columns(2, border=False)
 
     with col1:
         st.warning("""
-    **Air Quality Still Matters (But Less Than Expected)**
+    **Air Quality Still Matters (But Less Intense Than Expected)**
     - After accounting for location differences, air quality does affect asthma rates
-    - For every 10-point increase in AQI, we see about 2 additional ER visits per 10,000 people
-    - It's a real effect, just smaller than initially thought
+    - For every 10-point increase in AQI, we see about 2 additional ED visits per 10,000 people
+    - It's a real measurable effect, just along with other factors (time, location)
     """)
 
     with col2:
         st.warning("""
         **COVID-19 Impact**
-        - ER visits dropped dramatically in 2020-2021 
+        - Asthma ED visits dropped dramatically in 2020-2021 
         - People avoided hospitals during the pandemic
         - This affected all counties equally
         """)
 
     st.warning("""
-        **Location is Everything**
-        - Your county is the biggest predictor of asthma ER visits
+        **Location Impact**
+        - Your county is the additionally an influence on asthma ER visits
         - Some counties have 3 times more visits than others
         - This suggests factors beyond air quality matter (healthcare access, socioeconomic status, etc.)
     """)
@@ -276,7 +274,7 @@ def main():
 
         with col1:
             # Time series plot
-            yearly_ts_chart = plot_time_series(df, 'year', None, 'Average Asthma ER Visits by Year (All Counties)', show_covid)
+            yearly_ts_chart = plot_time_series(df, 'year', None, 'Asthma ER Rate by Year (Average of All Counties)', show_covid)
             st.plotly_chart(yearly_ts_chart, use_container_width=True)
 
         with col2:
@@ -287,19 +285,20 @@ def main():
             - ER visits were relatively stable from 2013-2019
             - Dramatic drop in 2020-2021 during COVID-19 pandemic
             - People avoided hospitals during pandemic, not necessarily fewer asthma cases
+            - Demonstrates the importance of looking at year as a contributing factor to asthma ER rates
             """)
             st.markdown("\n")
             st.markdown("*Select specific counties in the filter to see additional comparisons by county!*")
 
         # County comparison over time
         if selected_counties:
-            county_ts_chart = plot_time_series(filtered, ['year', 'county'], 'county', 'Average Asthma ER Visits by Year (Your Selected Counties)', show_covid)
+            county_ts_chart = plot_time_series(filtered, ['year', 'county'], 'county', 'Asthma ER Rate by Year (Your Selected Counties)', show_covid)
             st.plotly_chart(county_ts_chart, use_container_width=True)
 
         st.subheader("Top 10 Counties by Metric Across Selected Years")
         col1, col2 = st.columns(2)
-        col1.altair_chart(plot_top_ten_counties_by_metric(filtered, selected_years, 'median_aqi', 'Median AQI'), use_container_width=True)
-        col2.altair_chart(plot_top_ten_counties_by_metric(filtered, selected_years, 'asthma_rate', 'Asthma ED Rate'), use_container_width=True)
+        col1.altair_chart(plot_top_ten_counties_by_metric(df, selected_years, 'median_aqi', 'Median AQI'), use_container_width=True)
+        col2.altair_chart(plot_top_ten_counties_by_metric(df, selected_years, 'asthma_rate', 'Asthma ER Rate'), use_container_width=True)
 
 
     with tab2:
@@ -310,30 +309,36 @@ def main():
         (only about 1.2% of the total variation explained)
         - Realized the relationship between AQI and asthma rates is possibly more complex (hidden by other factors ie: year and county)
         """)
+        # Scatter plot with OLS trendline
         simple_scatter = px.scatter(filtered, x='median_aqi', y='asthma_rate', 
-                            title=f'Asthma ER Rates vs Median AQI',
-                            labels={'county': 'County',
-                                    'median_aqi': 'Median AQI',
-                                    'asthma_rate': 'ER Visits per 10,000 People'},
-                            trendline="ols",
-                            trendline_color_override='purple',)
+                                    title=f'Asthma ER Rates vs Median AQI',
+                                    labels={'county': 'County',
+                                            'median_aqi': 'Median AQI',
+                                            'asthma_rate': 'Asthma ER Visits (per 10k)'},
+                                    trendline="ols",
+                                    trendline_color_override='purple',)
         st.plotly_chart(simple_scatter, use_container_width=True)
 
-        # Correlation analysis
-        correlation = filtered['median_aqi'].corr(filtered['asthma_rate'])
+        # Simple OLS regression model
+        simple_model = smf.ols("asthma_rate ~ median_aqi", data=filtered).fit()
+
+        # R-squared from OLS model
+        r_squared = simple_model.rsquared
 
         col1, col2 = st.columns(2)
         with col1:
-            st.metric("Correlation Strength", f"{correlation:.3f}")
+            st.metric("R-squared", f"{r_squared:.3f}", 
+                      help="")
         with col2:
-            if abs(correlation) < 0.3:
+            if r_squared < 0.05:
+                strength = "Very Weak"
+            elif r_squared < 0.2:
                 strength = "Weak"
-            elif abs(correlation) < 0.6:
+            elif r_squared < 0.5:
                 strength = "Moderate" 
             else:
                 strength = "Strong"
             st.metric("Relationship Strength", strength)
-        
 
         st.header("Solution: Multiple Regression Model")
         st.markdown("""
@@ -342,7 +347,7 @@ def main():
         """)
 
         st.success("""
-        Each 1-point rise in AQI predicts about 0.2 more asthma ED visits (per 10,000), demonstrating air quality really does matter!
+        Each 1-point rise in AQI predicts about 0.2 more asthma ER visits (per 10,000), demonstrating air quality really does matter!
         """)
         st.markdown("*More on the model's findings are continued in the **next tabs**!*")
 
@@ -359,14 +364,14 @@ def main():
         st.altair_chart(plot_prediction_accuracy(filtered, selected_years), use_container_width=True)
         st.markdown("This plot compares observed vs. predicted rates, points near the red line show strong prediction accuracy.")
         st.success("""
-        Predicts with **87.6% accuracy** - the model explains about 88% of why asthma rates differ between counties and years!
+        The model predicts to within ±5.8 visits per 10,000
         """)
 
         # Prediction Errors
         st.plotly_chart(plot_prediction_errors(filtered), use_container_width=True)
-        st.markdown("*Prediction errors* (residuals) are the differences between the actual ED rate and the model's prediction.")
+        st.markdown("*Prediction errors* (residuals) are the differences between the actual ER rate and the model's prediction.")
         st.success("""
-        Most errors cluster near zero, indicating the model isn't systematically over or under predicting.
+        No bias: Most errors cluster near zero, indicating the model isn't systematically over or under predicting.
         """)
 
     with tab4:
@@ -386,10 +391,9 @@ def main():
         with col1:
             st.info("""
             **Model Statistics:**
-            - **Accuracy (R-squared)**: 87.56%
-            - **Sample Size**: 529 observations
-            - **Counties**: 53 different counties
-            - **Time Period**: 2013-2022
+            - **R²**: 0.876
+            - **Slope (AQI)**: 0.202
+            - **RMSE**: 5.76
             - **Statistical Significance**: Very strong (p < 0.001)
             """)
             
@@ -397,7 +401,8 @@ def main():
             st.success("""
             **What This Means:**
             - The model can explain 87.56% of why asthma rates vary
-            - Studied 529 data points across 10 years
+            - Finds each 10-point AQI increase raises asthma visits by +2 per 10,000
+            - Predicts to within ±5.8 visits per 10,000
             - The results are statistically reliable
             - We can be confident the findings aren't due to chance
             """)
@@ -426,6 +431,7 @@ def main():
     st.download_button("Download data as CSV", csv, "aqi_asthma.csv", "text/csv")
     #st.download_button("Download filtered data as CSV", filtered_csv, "filtered_aqi_asthma.csv", "text/csv")
 
+    st.markdown("Data from US EPA and Tracking California")
 
 if __name__ == "__main__":
     main()
