@@ -1,6 +1,6 @@
 streamlit==1.25.0
 altair==4.2.2
-numpy==1.24.3
+numpy>=1.25.0
 pandas==1.5.3
 plotly==5.15.0
 scikit-learn==1.2.2
