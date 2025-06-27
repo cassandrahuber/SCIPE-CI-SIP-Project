@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import altair as alt
 import streamlit as st
-import plotly.express as px
 
 from sklearn.metrics import mean_squared_error
 import statsmodels.formula.api as smf
