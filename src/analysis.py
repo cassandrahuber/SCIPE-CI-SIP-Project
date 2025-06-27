@@ -32,7 +32,7 @@ print(highest_asthma)
 ##may add the worst aqi counties's asthma rates to the table
 ##may add the highest asthma counties's aqi to the table
 
-# correlation analysis (pearson's correlation)
+# correlation coefficient analysis
 # note: this is a simple correlation, not accounting for county or year
 correlation = df['median_aqi'].corr(df['asthma_rate'])
 print(f"Correlation between AQI and Asthma rates: {correlation:.3f}")
@@ -86,7 +86,7 @@ plt.show()
 
 # using models to explore further on the complex relationship:
 
-# simple OLS regression model 
+# simple OLS regression model (similar to simple linear regression)
 # "only aqi vs. asthma rate"
 # note: this fit does not account for the whole strength of the relationship
 model = smf.ols("asthma_rate ~ median_aqi", data=df).fit()
