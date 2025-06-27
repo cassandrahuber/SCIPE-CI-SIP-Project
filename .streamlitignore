@@ -1,0 +1,14 @@
+# Ignore the tests folder
+tests/
+
+# Ignore Jupyter notebooks
+*.ipynb
+
+# Ignore temporary or backup files
+*.pyc
+__pycache__/
+.DS_Store
+
+# Ignore specific folders
+notebooks/
+data/
