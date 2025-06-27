@@ -3,5 +3,5 @@ altair==4.2.2
 numpy>=1.25.0
 pandas==1.5.3
 plotly==5.15.0
-scikit-learn==1.2.2
+#scikit-learn==1.2.2
 statsmodels==0.13.5

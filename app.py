@@ -3,10 +3,9 @@ import numpy as np
 import plotly.express as px
 import altair as alt
 import streamlit as st
-
-from sklearn.metrics import mean_squared_error
 import statsmodels.formula.api as smf
 
+#from sklearn.metrics import mean_squared_error
 
 @st.cache_data
 def load_data(path):
@@ -119,7 +118,7 @@ def plot_time_series(df, group_by, color, title, show_covid):
 
 
 
-def compute_model_metrics(df, model):
+#def compute_model_metrics(df, model):
     mse  = mean_squared_error(df['asthma_rate'], df['y_pred'])
     rmse = np.sqrt(mse)    
     slope = model.params['median_aqi']
@@ -132,7 +131,6 @@ def compute_model_metrics(df, model):
         'slope_p':   pval,
         'n_obs':     int(model.nobs)
     }
-
 
 
 
