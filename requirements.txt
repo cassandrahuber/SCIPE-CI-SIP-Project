@@ -1,3 +1,7 @@
+streamlit
+altair
+numpy
 pandas
-seaborn
-notebook
+plotly
+scikit-learn
+statsmodels
