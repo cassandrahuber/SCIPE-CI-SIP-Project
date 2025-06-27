@@ -1,5 +1,5 @@
 import pandas as pd
-from scipy import stats
+#from scipy import stats
 import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 
@@ -39,8 +39,8 @@ print(f"Correlation between AQI and Asthma rates: {correlation:.3f}")
 
 # linear regression 
 # note: this is a simple linear regression, not accounting for county or year
-slope, intercept, r_value, p_value, std_err = stats.linregress(df['median_aqi'], df['asthma_rate'])
-print(f"R-squared: {r_value**2:.3f}, P-value: {p_value:.3f}")
+#slope, intercept, r_value, p_value, std_err = stats.linregress(df['median_aqi'], df['asthma_rate'])
+#print(f"R-squared: {r_value**2:.3f}, P-value: {p_value:.3f}")
 
 
 
