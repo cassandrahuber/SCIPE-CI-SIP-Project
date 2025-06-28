@@ -1,20 +1,21 @@
 import pandas as pd
-#from scipy import stats
 import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
 # load clean merged data
-df = pd.read_csv("../processed_data/merged_data_2017-2021.csv")
+df = pd.read_csv("../processed_data/merged_data_2013-20212.csv")
 df = df.drop(columns=["Unnamed: 0"]) # remove index column
 
 # data overview:
 print(f"Dataset shape: {df.shape}")
 print(f"Counties: {df['county'].nunique()}")
 print(f"Years: {df['year'].unique()}")
-#print(f"\nMissing values: {df.isnull().sum()}")
-#print(df.describe())
-
-
+print(f"\nMissing values: {df.isnull().sum()}")
+print(df.describe())
 
 
 # bastic statistics of the data:
@@ -28,20 +29,6 @@ print(worst_aqi)
 highest_asthma = df.groupby('county')['asthma_rate'].mean().sort_values(ascending=False).head(10)
 print("Counties with highest astham rates:")
 print(highest_asthma)
-
-##may add the worst aqi counties's asthma rates to the table
-##may add the highest asthma counties's aqi to the table
-
-# correlation coefficient analysis
-# note: this is a simple correlation, not accounting for county or year
-correlation = df['median_aqi'].corr(df['asthma_rate'])
-print(f"Correlation between AQI and Asthma rates: {correlation:.3f}")
-
-# linear regression 
-# note: this is a simple linear regression, not accounting for county or year
-#slope, intercept, r_value, p_value, std_err = stats.linregress(df['median_aqi'], df['asthma_rate'])
-#print(f"R-squared: {r_value**2:.3f}, P-value: {p_value:.3f}")
-
 
 
 
@@ -83,8 +70,12 @@ plt.show()
 
 
 
+# simple relationship analysis:
 
-# using models to explore further on the complex relationship:
+# correlation coefficient analysis
+# note: this is a simple correlation, not accounting for county or year
+correlation = df['median_aqi'].corr(df['asthma_rate'])
+print(f"Correlation between AQI and Asthma rates: {correlation:.3f}")
 
 # simple OLS regression model (similar to simple linear regression)
 # "only aqi vs. asthma rate"
@@ -92,6 +83,9 @@ plt.show()
 model = smf.ols("asthma_rate ~ median_aqi", data=df).fit()
 print(model.summary())
 
+
+
+# using more complex models to explore further on the complex relationship:
 
 # multiple OLS regression model 
 # "aqi vs. asthma rate by county and year"
@@ -102,7 +96,7 @@ print(mod.summary())
 # extracting the observed, predicted, and residuals
 y = df['asthma_rate']
 y_pred  = mod.fittedvalues
-residuals = df['asthma_rate'] - df['y_pred']
+residuals = df['asthma_rate'] - y_pred
 
 
 
@@ -137,3 +131,25 @@ plot_coefs.plot(kind='barh')
 plt.xlabel('Coefficient Value')
 plt.title('Top 10 Negative & Positive County Fixed Effects')
 plt.show()
+
+# in sample test (to find RSME of above multiple ols regression model)
+mse  = mean_squared_error(df['asthma_rate'], df['y_pred'])
+rmse = np.sqrt(mse)
+print("RMSE:", rmse)
+
+
+# out of sample test (to find RSME):
+# training on a portion of the data and then testing on smaller portion to remove any possible "peeking effect" (model cheating on predictions)
+# split merged df into train and test
+train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
+
+# fit the OLS on the training set
+mod = smf.ols('asthma_rate ~ median_aqi + C(county) + C(year)', data=train_df).fit()
+
+# predict on test set
+test_df['y_pred_test'] = mod.predict(test_df)
+
+# evaluate
+mse_test = mean_squared_error(test_df['asthma_rate'], test_df['y_pred_test'])
+rmse_test = np.sqrt(mse_test)
+print("Test-set RMSE:", rmse_test)
