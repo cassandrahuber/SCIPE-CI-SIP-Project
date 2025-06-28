@@ -7,6 +7,7 @@ By Cassandra Huber
 
 ## Acknowledgements:
 Senior Mentor: Dr. Alex Stokes
+
 Supporting Mentors: Luke Nelson, Connor Schuller, Gavon Wong, Kaiapuni Roseguo, Sean Cleveland
 
 Project created by Hawai'i Data Science Institute
