@@ -1,3 +1,4 @@
 build-essential
 libatlas-base-dev
 libjpeg-dev
+gfortran

@@ -1,5 +1,5 @@
 altair==5.5.0
-numpy>=1.18.5
+scipy==1.9.3
 pandas==1.5.3
 plotly==6.1.2
 matplotlib==3.9.2
@@ -11,5 +11,4 @@ pillow==11.1.0
 #scikit-learn==1.2.2
 seaborn==0.13.2
 
-black==25.1.0
 pytest==7.4.0
