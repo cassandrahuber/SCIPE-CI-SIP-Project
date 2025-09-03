@@ -6,9 +6,11 @@ By Cassandra Huber
 
 
 ## Acknowledgements:
+Director: Dr. Sean Cleveland
+
 Senior Mentor: Dr. Alex Stokes
 
-Supporting Mentors: Luke Nelson, Connor Schuller, Gavon Wong, Kaiapuni Roseguo, Sean Cleveland
+Supporting Mentors: Luke Nelson, Connor Schuller, Gavon Wong, Kaiapuni Roseguo
 
 Project created by Hawai'i Data Science Institute
 
